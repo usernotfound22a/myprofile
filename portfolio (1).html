@@ -13,8 +13,8 @@
   --text:#ffffff;--text-secondary:#e0e0e0;--muted:#666666;
   --glass:rgba(255,255,255,0.05);--glass-b:rgba(255,255,255,0.08);
 }
-html{scroll-behavior:smooth;overflow-x:hidden;perspective:1200px}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+html,body{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
 .grain{position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:0.04;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -23,14 +23,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   background:repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px)}
 
 /* === ROTATING BACKGROUND FIGURE === */
-.bg-figure{
-  position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(0deg) scale(1);
-  width:clamp(350px,50vw,700px);height:auto;
-  opacity:0.07;z-index:0;pointer-events:none;
-  filter:grayscale(0.3) contrast(1.1);
-  will-change:transform;
+#bgVideo{
+  position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3;pointer-events:none;opacity:0.96;filter:brightness(0.74) saturate(1.2) contrast(1.1);
 }
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:-2;background:radial-gradient(circle at 15% 20%,rgba(0,229,255,0.12),transparent 22%),radial-gradient(circle at 85% 15%,rgba(255,0,170,0.08),transparent 18%),radial-gradient(circle at 50% 80%,rgba(255,255,255,0.06),transparent 20%);
+  mix-blend-mode:screen;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,0.20),transparent 20%,rgba(0,0,0,0.55));
+}
+img.bg-figure{display:none !important;}
+body, a, button{cursor:none}
+.cursor-dot,
+.cursor-ring{
+  position:fixed;top:0;left:0;pointer-events:none;transform:translate(-50%,-50%);transition:transform 0.15s ease-out, width 0.15s ease-out, height 0.15s ease-out, border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index:99999;mix-blend-mode:screen;
+}
+.cursor-dot{
+  width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.95);box-shadow:0 0 15px rgba(255,255,255,0.9);
+}
+.cursor-ring{
+  width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.5);box-shadow:0 0 22px rgba(0,255,255,0.12),0 0 16px rgba(255,0,170,0.08);
+}
+.cursor-ring.hover{transform:translate(-50%,-50%) scale(1.4);border-color:rgba(255,255,255,0.85);}
+.cursor-dot.active{transform:translate(-50%,-50%) scale(1.8);}
 
 /* === PRELOADER === */
 .preloader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 1s ease 0.3s,visibility 1s ease 0.3s;overflow:hidden}
@@ -81,67 +98,59 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 @keyframes gd2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
 @keyframes gp{0%,100%{opacity:0.08;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.18;transform:translate(-50%,-50%) scale(1.3)}}
 
-.hero-content{z-index:3;text-align:center;opacity:0;animation:heroIn 1.2s 2.6s forwards cubic-bezier(0.16,1,0.3,1)}
+.hero-content{z-index:3;text-align:center;opacity:0;animation:heroIn 0.9s 1.2s forwards cubic-bezier(0.16,1,0.3,1)}
 @keyframes heroIn{from{opacity:0;transform:translateY(60px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .hero-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:8px;color:var(--accent);text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;text-shadow:0 0 10px var(--accent)}
 .hero-tag-line{width:40px;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
-.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,14vw,12rem);line-height:0.9;letter-spacing:-2px;position:relative;color:var(--text);text-shadow:0 0 30px var(--primary),0 0 60px rgba(255,23,68,0.5)}
-.hero-name .first{display:block;color:var(--text);position:relative;z-index:2;text-shadow:0 0 30px var(--primary)}
-.hero-name .last{display:block;color:var(--text);position:relative;z-index:2;text-shadow:0 0 30px var(--primary),0 0 60px rgba(255,23,68,0.5)}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,14vw,12rem);line-height:0.9;letter-spacing:-2px;position:relative;color:var(--text);text-shadow:0 0 30px var(--primary),0 0 60px rgba(255,23,68,0.5);overflow:hidden}
+.hero-name .first,
+.hero-name .last{
+  display:block;color:var(--text);position:relative;z-index:2;text-shadow:0 0 30px var(--primary);opacity:0;transform:translateY(18px);
+  animation:heroNameFadeIn 0.9s ease-out forwards;
+}
+.hero-name .first{animation-delay:1.35s}
+.hero-name .last{animation-delay:1.55s;text-shadow:0 0 30px var(--primary),0 0 60px rgba(255,23,68,0.5)}
+@keyframes heroNameFadeIn{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
 .hero-roles{font-size:1rem;color:var(--text-secondary);margin-top:1.5rem;font-weight:300;letter-spacing:2px;text-shadow:0 0 10px rgba(0,229,255,0.3)}
 .hero-roles span{color:var(--primary);font-weight:500;text-shadow:0 0 15px var(--primary)}
 
-.rec-dot{position:absolute;top:2rem;left:2rem;z-index:10;display:flex;align-items:center;gap:0.6rem;opacity:0;animation:heroIn 0.8s 3.2s forwards}
+.rec-dot{position:absolute;top:3rem;left:2rem;z-index:10;display:flex;align-items:center;gap:0.6rem;opacity:0;animation:heroIn 0.7s 1.6s forwards}
 .rec-circle{width:10px;height:10px;border-radius:50%;background:var(--primary);animation:recB 1.5s infinite;box-shadow:0 0 10px var(--primary)}
 @keyframes recB{0%,100%{opacity:1}50%{opacity:0.2}}
 .rec-text{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--primary);letter-spacing:2px;text-shadow:0 0 10px var(--primary)}
-.timecode{position:absolute;top:2rem;right:2rem;z-index:10;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--muted);opacity:0;animation:heroIn 0.8s 3.4s forwards}
-.frame-corner{position:absolute;z-index:10;width:30px;height:30px;opacity:0;animation:heroIn 0.6s 3s forwards}
-.frame-corner.tl{top:5rem;left:2rem;border-top:2px solid var(--primary);border-left:2px solid var(--primary);box-shadow:0 0 15px var(--primary),inset 0 0 15px var(--primary)}
+.timecode{position:absolute;top:3rem;right:2rem;z-index:10;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--muted);opacity:0;animation:heroIn 0.7s 1.7s forwards}
+.frame-corner{position:absolute;z-index:10;width:30px;height:30px;opacity:0;animation:heroIn 0.5s 1.5s forwards}
+.frame-corner.tl{top:5.5rem;left:2rem;border-top:2px solid var(--primary);border-left:2px solid var(--primary);box-shadow:0 0 15px var(--primary),inset 0 0 15px var(--primary)}
 .frame-corner.tr{top:5rem;right:2rem;border-top:2px solid var(--primary);border-right:2px solid var(--primary);box-shadow:0 0 15px var(--primary),inset 0 0 15px var(--primary)}
 .frame-corner.bl{bottom:2rem;left:2rem;border-bottom:2px solid var(--primary);border-left:2px solid var(--primary);box-shadow:0 0 15px var(--primary),inset 0 0 15px var(--primary)}
 .frame-corner.br{bottom:2rem;right:2rem;border-bottom:2px solid var(--primary);border-right:2px solid var(--primary);box-shadow:0 0 15px var(--primary),inset 0 0 15px var(--primary)}
 
-.scroll-cue{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:0.6rem;opacity:0;animation:heroIn 0.8s 3.6s forwards}
-.scroll-cue-box{width:20px;height:34px;border:1.5px solid var(--accent);border-radius:10px;position:relative;box-shadow:0 0 10px var(--accent);animation:glow 2s infinite}
-.scroll-cue-dot{width:3px;height:8px;background:var(--primary);border-radius:2px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:sDot 2s infinite;box-shadow:0 0 5px var(--primary)}
-@keyframes glow{0%,100%{box-shadow:0 0 10px var(--accent)}50%{box-shadow:0 0 20px var(--accent)}}
-@keyframes sDot{0%,100%{transform:translateX(-50%) translateY(0);opacity:1}50%{transform:translateX(-50%) translateY(12px);opacity:0.2}}
-.scroll-cue span{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--muted);letter-spacing:4px;text-transform:uppercase}
 
-.section{padding:clamp(5rem,12vh,10rem) clamp(1.5rem,6vw,8rem);position:relative;z-index:2}
+.section{padding:clamp(5rem,12vh,10rem) clamp(1.5rem,6vw,8rem);position:relative;z-index:2;background:transparent;transform:none!important;perspective:none!important}
+.section:not(.hero){background:transparent;backdrop-filter:none;border:none}
+.timeline, .tl-item, .tl-card {transform:none!important;perspective:none!important;}
 .sec-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(255,106,47,0.08);line-height:1;position:absolute;top:-0.5rem;left:-0.5rem}
 .sec-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:6px;color:var(--accent);text-transform:uppercase;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.8rem;text-shadow:0 0 10px var(--accent)}
 .sec-label::before{content:'';width:30px;height:2px;background:linear-gradient(90deg,var(--primary),var(--accent))}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);line-height:1;letter-spacing:1px;color:var(--text);text-shadow:0 0 20px rgba(255,23,68,0.3)}
 
-.rv{opacity:0;transform:translateY(70px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}
+.rv{opacity:0;transform:translateY(30px);transition:opacity 0.85s ease-out, transform 0.85s ease-out}
 .rv.on,.scroll-reveal-up{opacity:1;transform:translateY(0)}
-.rv-l{opacity:0;transform:translateX(-80px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}
+.rv-l{opacity:0;transform:translateX(-30px);transition:opacity 0.85s ease-out, transform 0.85s ease-out}
 .rv-l.on,.scroll-reveal-left{opacity:1;transform:translateX(0)}
-.rv-r{opacity:0;transform:translateX(80px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}
+.rv-r{opacity:0;transform:translateX(30px);transition:opacity 0.85s ease-out, transform 0.85s ease-out}
 .rv-r.on,.scroll-reveal-right{opacity:1;transform:translateX(0)}
-.rv-s{opacity:0;transform:scale(0.85);transition:all 1s cubic-bezier(0.16,1,0.3,1)}
+.rv-s{opacity:0;transform:scale(0.96);transition:opacity 0.85s ease-out, transform 0.85s ease-out}
 .rv-s.on,.scroll-reveal-zoom{opacity:1;transform:scale(1)}
-.rv-d1{transition-delay:0.1s}.rv-d2{transition-delay:0.2s}.rv-d3{transition-delay:0.3s}.rv-d4{transition-delay:0.4s}
+.rv-d1{transition-delay:0.08s}.rv-d2{transition-delay:0.16s}.rv-d3{transition-delay:0.24s}.rv-d4{transition-delay:0.32s}
 
-/* === 3D SCROLL ANIMATIONS === */
-@keyframes slideInUp3D{from{opacity:0;transform:translateY(100px) rotateX(10deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}
-@keyframes slideInLeft3D{from{opacity:0;transform:translateX(-100px) rotateY(-10deg)}to{opacity:1;transform:translateX(0) rotateY(0)}}
-@keyframes slideInRight3D{from{opacity:0;transform:translateX(100px) rotateY(10deg)}to{opacity:1;transform:translateX(0) rotateY(0)}}
-@keyframes zoomIn3D{from{opacity:0;transform:scale(0.7) translateZ(-200px)}to{opacity:1;transform:scale(1) translateZ(0)}}
-@keyframes fadeInDepth{from{opacity:0;transform:translateZ(-100px)}to{opacity:1;transform:translateZ(0)}}
+.scroll-reveal-up,.scroll-reveal-left,.scroll-reveal-right,.scroll-reveal-zoom,.scroll-reveal-depth{opacity:1;transform:none}
+
 @keyframes glowPulse{0%{text-shadow:0 0 20px var(--primary)}50%{text-shadow:0 0 40px var(--primary),0 0 60px rgba(255,23,68,0.6)}100%{text-shadow:0 0 20px var(--primary)}}
-
-.scroll-reveal-up{animation:slideInUp3D 1s cubic-bezier(0.34,1.56,0.64,1) forwards}
-.scroll-reveal-left{animation:slideInLeft3D 1s cubic-bezier(0.34,1.56,0.64,1) forwards}
-.scroll-reveal-right{animation:slideInRight3D 1s cubic-bezier(0.34,1.56,0.64,1) forwards}
-.scroll-reveal-zoom{animation:zoomIn3D 1s cubic-bezier(0.34,1.56,0.64,1) forwards}
-.scroll-reveal-depth{animation:fadeInDepth 1s cubic-bezier(0.34,1.56,0.64,1) forwards}
 
 .section-title-glow{animation:glowPulse 3s ease-in-out infinite}
 
-.about{background:var(--bg2)}
+.about{background:transparent}
 .about-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:clamp(2rem,5vw,5rem);align-items:center;max-width:1100px;margin:0 auto}
 .about-img-wrap{position:relative}
 .about-img-wrap img{width:100%;max-width:380px;border-radius:8px;display:block;position:relative;z-index:2;box-shadow:0 30px 60px rgba(0,0,0,0.6)}
@@ -153,7 +162,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--orange);line-height:1}
 .stat-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:0.2rem}
 
-.exp{background:var(--bg)}
+.exp{background:transparent}
 .timeline{max-width:850px;margin:0 auto;position:relative;padding-left:50px}
 .timeline::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--orange),var(--cyan),var(--magenta),transparent)}
 .tl-item{position:relative;margin-bottom:2.5rem}
@@ -164,6 +173,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .tl-card::before{content:'';position:absolute;top:0;left:0;height:100%;width:3px;background:linear-gradient(180deg,var(--primary),var(--secondary));transform:scaleY(0);transform-origin:top;transition:transform 0.4s;box-shadow:0 0 15px var(--primary)}
 .tl-item:hover .tl-card{border-color:rgba(255,106,47,0.25);transform:translateX(8px)}
 .tl-item:hover .tl-card::before{transform:scaleY(1)}
+.tl-item .tl-card{transition:transform 0.8s ease,box-shadow 0.8s ease,border-color 0.8s ease;will-change:transform}
+.tl-item.active .tl-card{transform:translateX(0) scale(1.02);box-shadow:0 30px 80px rgba(255,23,68,0.18);border-color:rgba(255,106,47,0.35)}
+.tl-item.active .tl-marker::before{background:linear-gradient(180deg,var(--accent),var(--primary));box-shadow:0 0 25px var(--accent)}
 .tl-date{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--cyan);letter-spacing:2px;margin-bottom:0.4rem}
 .tl-role{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;margin-bottom:0.15rem}
 .tl-company{font-size:0.85rem;color:var(--muted);margin-bottom:0.7rem}
@@ -171,7 +183,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .tl-desc li{margin-bottom:0.3rem;list-style:none;position:relative;padding-left:1rem}
 .tl-desc li::before{content:'▸';position:absolute;left:0;color:var(--orange)}
 
-.skills{background:var(--bg2)}
+.skills{background:transparent}
 .skills-categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;max-width:1100px;margin:0 auto}
 .skill-block{background:var(--glass);border:2px solid var(--primary);border-radius:14px;padding:2rem;position:relative;overflow:hidden;transition:all 0.5s;box-shadow:0 0 15px rgba(255,23,68,0.1)}
 .skill-block:hover{border-color:var(--primary);transform:translateY(-6px);box-shadow:0 0 35px rgba(255,23,68,0.3);background:rgba(255,23,68,0.05)}
@@ -186,7 +198,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .skill-pill{font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:0.3rem 0.7rem;border:1px solid var(--primary);background:rgba(255,23,68,0.08);border-radius:100px;color:var(--primary);transition:all 0.3s;text-shadow:0 0 5px var(--primary)}
 .skill-pill:hover{background:rgba(255,23,68,0.15);transform:scale(1.05);box-shadow:0 0 10px var(--primary)}
 
-.featured{background:var(--bg2);position:relative;overflow:hidden}
+.featured{background:transparent;position:relative;overflow:hidden}
 .featured::before{content:'';position:absolute;top:0;left:-50%;width:200%;height:100%;background:linear-gradient(45deg,transparent 30%,rgba(255,23,68,0.05) 50%,transparent 70%);animation:slideGradient 8s infinite;pointer-events:none;z-index:0}
 @keyframes slideGradient{0%{transform:translateX(0)}100%{transform:translateX(100%)}}
 .featured-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:3rem;max-width:1100px;margin:0 auto;position:relative;z-index:1}
@@ -213,7 +225,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .play-badge{background:rgba(255,23,68,0.9) !important;box-shadow:0 0 30px rgba(255,23,68,0.6) !important;display:flex;align-items:center;justify-content:center;font-size:1.2rem !important;padding:0.8rem 1.2rem !important;letter-spacing:1px}
 .play-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.2));border-radius:100px}
 
-.edu{background:var(--bg)}
+.edu{background:transparent}
 .edu-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:900px;margin:0 auto}
 .edu-card{background:var(--glass);border:2px solid var(--accent);border-radius:14px;padding:2.2rem;position:relative;overflow:hidden;transition:all 0.5s;box-shadow:0 0 15px rgba(0,229,255,0.1)}
 .edu-card:hover{border-color:var(--primary);transform:translateY(-5px);box-shadow:0 0 30px rgba(255,23,68,0.3)}
@@ -223,7 +235,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 .edu-degree{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.3rem}
 .edu-school{color:var(--muted);font-size:0.9rem}
 
-.contact{background:var(--bg2);text-align:center}
+.contact{background:transparent;text-align:center}
 .contact-cta{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,4rem);margin-bottom:2.5rem;line-height:1.1}
 .contact-row{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;max-width:800px;margin:0 auto}
 .contact-chip{display:flex;align-items:center;gap:0.7rem;padding:1rem 1.8rem;background:var(--glass);border:2px solid var(--primary);border-radius:100px;text-decoration:none;color:var(--text);transition:all 0.4s;cursor:pointer;box-shadow:0 0 15px rgba(255,23,68,0.1)}
@@ -354,7 +366,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 </style>
 </head>
 <body>
-
+<video id="bgVideo" autoplay muted playsinline preload="auto">
+  <source src="15283233-hd_1080_1920_30fps.mp4" type="video/mp4">
+</video>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
 <div class="grain"></div>
 <div class="scanlines"></div>
 <div class="progress-bar" id="progressBar"></div>
@@ -400,6 +416,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
 </nav>
 
 <section class="hero" id="hero">
+  <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+    <source src="15283233-hd_1080_1920_30fps.mp4" type="video/mp4">
+  </video>
   <div class="hero-glow hero-glow-1"></div>
   <div class="hero-glow hero-glow-2"></div>
   <div class="hero-glow hero-glow-3"></div>
@@ -415,16 +434,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
     <h1 class="hero-name"><span class="first" data-text="SARTHAK">SARTHAK</span><span class="last" data-text="GHIMIRE">GHIMIRE</span></h1>
     <p class="hero-roles">Videographer <span>•</span> Video Editor <span>•</span> 3D & Graphic Artist</p>
   </div>
-  <div class="scroll-cue">
-    <div class="scroll-cue-box"><div class="scroll-cue-dot"></div></div>
-    <span>Scroll to explore</span>
-  </div>
 </section>
 
 <section class="section about" id="about">
   <div class="about-grid">
     <div class="about-img-wrap rv-l">
-      <img src="/mnt/user-data/uploads/1777970154695_image.png" alt="Sarthak Ghimire">
+      <img src="Screenshot 2026-05-05 141943.png" alt="Sarthak Ghimire Creator">
       <div class="about-img-overlay"></div>
       <div class="about-img-badge">CREATOR</div>
     </div>
@@ -454,13 +469,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
     </div>
   </div>
   <div class="timeline">
-    <div class="tl-item rv rv-d1"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">JUL 2025 — PRESENT</div><div class="tl-role">FOUNDER & CREATIVE HEAD</div><div class="tl-company">DamnKicks</div><ul class="tl-desc"><li>Founded and managed sneaker brand</li><li>Created brand identity, ads & product videos</li><li>Handled marketing strategy and content creation</li></ul></div></div>
-    <div class="tl-item rv rv-d2"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">DEC 2025 — PRESENT</div><div class="tl-role">DIGITAL MARKETING INTERN (FULL-TIME)</div><div class="tl-company">Mindcraft Academy — Pokhara, Nepal</div><ul class="tl-desc"><li>Managed social media content and posting schedules</li><li>Created and edited promotional videos and reels</li><li>Handled photography and videography for marketing</li></ul></div></div>
-    <div class="tl-item rv rv-d1"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">OCT 2025 — PRESENT</div><div class="tl-role">VIDEOGRAPHER & VIDEO EDITOR (FREELANCE)</div><div class="tl-company">Freelance</div><ul class="tl-desc"><li>Videography and photography for brands & events</li><li>Edited reels, ads, and promotional videos</li><li>Handled full post-production workflow</li></ul></div></div>
-    <div class="tl-item rv rv-d2"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">OCT 2025 — PRESENT</div><div class="tl-role">DIGITAL MARKETING INTERN (PART-TIME)</div><div class="tl-company">Brand Builder — Pokhara, Nepal</div><ul class="tl-desc"><li>Supported digital marketing campaigns</li><li>Edited social media videos and creative content</li></ul></div></div>
-    <div class="tl-item rv rv-d1"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">APR 2024 — PRESENT</div><div class="tl-role">DIGITAL MARKETING MANAGER (PART-TIME)</div><div class="tl-company">Hustle Clothing — Pokhara, Nepal</div><ul class="tl-desc"><li>Planned and executed digital marketing strategies</li><li>Managed Instagram & Facebook pages</li><li>Created promotional content, reels, and ads</li></ul></div></div>
-    <div class="tl-item rv rv-d2"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">APR 2024 — PRESENT</div><div class="tl-role">SOCIAL MEDIA MANAGER</div><div class="tl-company">Pokhara Cricket Academy</div><ul class="tl-desc"><li>Managed official social media handles</li><li>Produced sports reels, match highlights & posters</li><li>Increased engagement through consistent content</li></ul></div></div>
-    <div class="tl-item rv rv-d1"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">MAY 2024 — DEC 2025</div><div class="tl-role">SOCIAL MEDIA MARKETING MANAGER</div><div class="tl-company">Zenex EV — Pokhara, Nepal</div><ul class="tl-desc"><li>Handled brand communication on social platforms</li><li>Created short-form promotional videos</li><li>Managed social media calendars and campaigns</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">JUL 2025 — PRESENT</div><div class="tl-role">FOUNDER & CREATIVE HEAD</div><div class="tl-company">DamnKicks</div><ul class="tl-desc"><li>Founded and managed sneaker brand</li><li>Created brand identity, ads & product videos</li><li>Handled marketing strategy and content creation</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">DEC 2025 — PRESENT</div><div class="tl-role">DIGITAL MARKETING INTERN (FULL-TIME)</div><div class="tl-company">Mindcraft Academy — Pokhara, Nepal</div><ul class="tl-desc"><li>Managed social media content and posting schedules</li><li>Created and edited promotional videos and reels</li><li>Handled photography and videography for marketing</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">OCT 2025 — PRESENT</div><div class="tl-role">VIDEOGRAPHER & VIDEO EDITOR (FREELANCE)</div><div class="tl-company">Freelance</div><ul class="tl-desc"><li>Videography and photography for brands & events</li><li>Edited reels, ads, and promotional videos</li><li>Handled full post-production workflow</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">OCT 2025 — PRESENT</div><div class="tl-role">DIGITAL MARKETING INTERN (PART-TIME)</div><div class="tl-company">Brand Builder — Pokhara, Nepal</div><ul class="tl-desc"><li>Supported digital marketing campaigns</li><li>Edited social media videos and creative content</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">APR 2024 — PRESENT</div><div class="tl-role">DIGITAL MARKETING MANAGER (PART-TIME)</div><div class="tl-company">Hustle Clothing — Pokhara, Nepal</div><ul class="tl-desc"><li>Planned and executed digital marketing strategies</li><li>Managed Instagram & Facebook pages</li><li>Created promotional content, reels, and ads</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">APR 2024 — PRESENT</div><div class="tl-role">SOCIAL MEDIA MANAGER</div><div class="tl-company">Pokhara Cricket Academy</div><ul class="tl-desc"><li>Managed official social media handles</li><li>Produced sports reels, match highlights & posters</li><li>Increased engagement through consistent content</li></ul></div></div>
+    <div class="tl-item"><div class="tl-marker"></div><div class="tl-card"><div class="tl-date">MAY 2024 — DEC 2025</div><div class="tl-role">SOCIAL MEDIA MARKETING MANAGER</div><div class="tl-company">Zenex EV — Pokhara, Nepal</div><ul class="tl-desc"><li>Handled brand communication on social platforms</li><li>Created short-form promotional videos</li><li>Managed social media calendars and campaigns</li></ul></div></div>
   </div>
 </section>
 
@@ -473,10 +488,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
     </div>
   </div>
   <div class="skills-categories">
-    <div class="skill-block rv-s rv-d1" data-skill><div class="skill-block-icon">🎬</div><h3>VIDEO EDITING & MOTION</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Premiere Pro / CapCut / DaVinci</span><span>95%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:95%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>After Effects / Motion Graphics</span><span>85%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:85%"></div></div></div><div class="skill-pills"><span class="skill-pill">Short-form Reels</span><span class="skill-pill">Product Videos</span><span class="skill-pill">Color Grading</span><span class="skill-pill">Sound Design</span></div></div>
-    <div class="skill-block rv-s rv-d2" data-skill><div class="skill-block-icon">📹</div><h3>VIDEOGRAPHY & PHOTOGRAPHY</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Camera Work / Composition</span><span>90%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:90%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Lighting / Direction</span><span>85%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:85%"></div></div></div><div class="skill-pills"><span class="skill-pill">Brand Shoots</span><span class="skill-pill">Event Coverage</span><span class="skill-pill">Product Photography</span></div></div>
-    <div class="skill-block rv-s rv-d3" data-skill><div class="skill-block-icon">🧊</div><h3>3D & GRAPHIC DESIGN</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Blender 3D</span><span>80%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:80%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Canva / Photoshop</span><span>90%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:90%"></div></div></div><div class="skill-pills"><span class="skill-pill">3D Modeling</span><span class="skill-pill">Product Renders</span><span class="skill-pill">Poster Design</span><span class="skill-pill">Brand Identity</span></div></div>
-    <div class="skill-block rv-s rv-d4" data-skill><div class="skill-block-icon">📊</div><h3>DIGITAL MARKETING</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Social Media Strategy</span><span>92%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:92%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Meta Ads / Analytics</span><span>78%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:78%"></div></div></div><div class="skill-pills"><span class="skill-pill">Instagram</span><span class="skill-pill">Facebook</span><span class="skill-pill">TikTok</span><span class="skill-pill">Content Planning</span><span class="skill-pill">Copywriting</span></div></div>
+    <div class="skill-block rv-l rv-d1" data-skill><div class="skill-block-icon">🎬</div><h3>VIDEO EDITING & MOTION</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Premiere Pro / CapCut / DaVinci</span><span>95%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:95%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>After Effects / Motion Graphics</span><span>85%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:85%"></div></div></div><div class="skill-pills"><span class="skill-pill">Short-form Reels</span><span class="skill-pill">Product Videos</span><span class="skill-pill">Color Grading</span><span class="skill-pill">Sound Design</span></div></div>
+    <div class="skill-block rv-r rv-d2" data-skill><div class="skill-block-icon">📹</div><h3>VIDEOGRAPHY & PHOTOGRAPHY</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Camera Work / Composition</span><span>90%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:90%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Lighting / Direction</span><span>85%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:85%"></div></div></div><div class="skill-pills"><span class="skill-pill">Brand Shoots</span><span class="skill-pill">Event Coverage</span><span class="skill-pill">Product Photography</span></div></div>
+    <div class="skill-block rv-l rv-d3" data-skill><div class="skill-block-icon">🧊</div><h3>3D & GRAPHIC DESIGN</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Blender 3D</span><span>80%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:80%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Canva / Photoshop</span><span>90%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:90%"></div></div></div><div class="skill-pills"><span class="skill-pill">3D Modeling</span><span class="skill-pill">Product Renders</span><span class="skill-pill">Poster Design</span><span class="skill-pill">Brand Identity</span></div></div>
+    <div class="skill-block rv-r rv-d4" data-skill><div class="skill-block-icon">📊</div><h3>DIGITAL MARKETING</h3><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Social Media Strategy</span><span>92%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:92%"></div></div></div><div class="skill-block-bar"><div class="skill-block-bar-label"><span>Meta Ads / Analytics</span><span>78%</span></div><div class="skill-block-bar-track"><div class="skill-block-bar-fill" style="width:78%"></div></div></div><div class="skill-pills"><span class="skill-pill">Instagram</span><span class="skill-pill">Facebook</span><span class="skill-pill">TikTok</span><span class="skill-pill">Content Planning</span><span class="skill-pill">Copywriting</span></div></div>
   </div>
 </section>
 
@@ -619,6 +634,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   <div class="footer-name">SARTHAK GHIMIRE</div>
 </footer>
 
+<script src="https://unpkg.com/three@0.162.0/build/three.min.js"></script>
 <script>
 // DETECT DEVICE TYPE
 const isMobile=window.innerWidth<768;
@@ -748,15 +764,6 @@ const parallaxUpdate=()=>{
     const speed=50+(i*30);
     glow.style.transform=`translateY(${lastScrollY*speed*0.001}px) scale(${1+scrollPercent*0.2})`;
   });
-  
-  // 3D perspective on sections
-  document.querySelectorAll('.section').forEach(section=>{
-    const rect=section.getBoundingClientRect();
-    if(rect.top<window.innerHeight&&rect.bottom>0){
-      const parallax=(rect.top/window.innerHeight)*30;
-      section.style.transform=`perspective(1200px) rotateX(${parallax*0.5}deg)`;
-    }
-  });
 };
 
 window.addEventListener('scroll',()=>{
@@ -776,10 +783,245 @@ if(!isMobile){
   },{passive:true});
 }
 
+// Smooth scroll for internal anchors
+const pageAnchors=document.querySelectorAll('a[href^="#"]');
+pageAnchors.forEach(link=>{
+  link.addEventListener('click',event=>{
+    const targetId=link.getAttribute('href').slice(1);
+    const target=targetId?document.getElementById(targetId):null;
+    if(target){
+      event.preventDefault();
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      history.pushState(null,'',`#${targetId}`);
+    }
+  });
+});
+const bgVideo = document.getElementById('bgVideo');
+let videoDuration = 0;
+let videoFrameRequested = false;
+
+const syncVideoToScroll = () => {
+  if (!videoDuration) return;
+  const scrollTop = window.scrollY;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = Math.min(Math.max(scrollTop / (maxScroll || 1), 0), 1);
+  const targetTime = videoDuration * progress;
+  if (Math.abs(bgVideo.currentTime - targetTime) > 0.02) {
+    bgVideo.currentTime = targetTime;
+  }
+};
+
+bgVideo.addEventListener('loadedmetadata', () => {
+  videoDuration = bgVideo.duration || 0;
+  bgVideo.pause();
+  syncVideoToScroll();
+});
+
+window.addEventListener('scroll', () => {
+  if (!videoFrameRequested) {
+    videoFrameRequested = true;
+    requestAnimationFrame(() => {
+      videoFrameRequested = false;
+      syncVideoToScroll();
+    });
+  }
+},{passive:true});
 // Cleanup on resize to update device type
 window.addEventListener('resize',()=>{
   location.reload();
 },{passive:true});
+
+const nebulaCanvas = document.getElementById('nebulaCanvas');
+const nebulaRenderer = new THREE.WebGLRenderer({canvas:nebulaCanvas,antialias:true,alpha:true});
+nebulaRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+nebulaRenderer.setSize(window.innerWidth,window.innerHeight);
+nebulaRenderer.setClearColor(0x020110,1);
+
+const nebulaScene = new THREE.Scene();
+const nebulaCamera = new THREE.OrthographicCamera(-1,1,1,-1,0.1,10);
+nebulaCamera.position.z = 1;
+
+const nebulaUniforms = {
+  uTime: {value:0.0},
+  uResolution: {value:new THREE.Vector2(window.innerWidth,window.innerHeight)},
+  uMouse: {value:new THREE.Vector2(0.5,0.5)},
+  uAudio: {value:0.0},
+  uRipple: {value:0.0}
+};
+
+const nebulaMaterial = new THREE.ShaderMaterial({
+  uniforms: nebulaUniforms,
+  vertexShader: `
+    varying vec2 vUv;
+    void main(){
+      vUv = uv;
+      gl_Position = vec4(position,1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float uTime;
+    uniform vec2 uResolution;
+    uniform vec2 uMouse;
+    uniform float uAudio;
+    uniform float uRipple;
+    varying vec2 vUv;
+
+    float hash(vec2 p){
+      return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);
+    }
+
+    float noise(vec2 p){
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f*f*(3.0-2.0*f);
+      return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+                 mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+    }
+
+    float fbm(vec2 p){
+      float value = 0.0;
+      float amplitude = 0.55;
+      for(int i = 0; i < 5; i++){
+        value += amplitude * noise(p);
+        p *= 2.1;
+        amplitude *= 0.5;
+      }
+      return value;
+    }
+
+    vec3 palette(float t){
+      vec3 a = vec3(0.02,0.01,0.08);
+      vec3 b = vec3(0.45,0.04,0.85);
+      vec3 c = vec3(0.13,0.18,0.45);
+      return mix(a, b, smoothstep(0.0,1.0,t)) + c * (1.0 - t);
+    }
+
+    float starField(vec2 uv){
+      float v = fract(sin(dot(uv * 220.0, vec2(12.9898,78.233))) * 43758.5453);
+      return smoothstep(0.995,1.0,v) * 1.4;
+    }
+
+    float ditherAmount(vec2 uv){
+      vec2 pixel = floor(uv * uResolution);
+      float m = mod(pixel.x + pixel.y * 2.0, 4.0);
+      float value = m == 0.0 ? 0.0 : m == 1.0 ? 0.5 : m == 2.0 ? 0.75 : 0.25;
+      return (value - 0.5) / 255.0;
+    }
+
+    void main(){
+      vec2 uv = vUv;
+      vec2 p = uv * 2.0 - 1.0;
+      p.x *= uResolution.x / uResolution.y;
+
+      vec2 mouse = (uMouse * 2.0 - 1.0) * vec2(uResolution.x/uResolution.y, 1.0);
+      float dist = length(p - mouse * 0.6);
+      float ripple = exp(-8.0 * dist) * uRipple * 1.6;
+
+      float base = fbm(p * 0.9 + vec2(uTime * 0.12, uTime * 0.14) + ripple * 0.4);
+      float detail = fbm(p * 3.5 - vec2(uTime * 0.09, uTime * 0.08) + base * 1.2);
+      float glow = smoothstep(0.22, 0.8, base + detail * 0.5 + ripple * 0.45 + uAudio * 0.35);
+      float depth = fbm(p * 0.5 + detail * 1.8 + uTime * 0.05);
+
+      float caR = fbm(p * 0.9 + vec2(uTime * 0.12, uTime * 0.14) + ripple * 0.4 + vec2(0.012,0.0));
+      float caG = fbm(p * 0.9 + vec2(uTime * 0.12, uTime * 0.14) + ripple * 0.4);
+      float caB = fbm(p * 0.9 + vec2(uTime * 0.12, uTime * 0.14) + ripple * 0.4 - vec2(0.012,0.0));
+      vec3 caShift = vec3(caR, caG, caB) * 0.08;
+
+      vec3 color = palette(glow * 0.9 + depth * 0.25) + caShift;
+      color += vec3(0.1,0.05,0.25) * pow(glow, 3.0);
+      color += vec3(1.0,0.75,1.0) * smoothstep(0.64, 0.95, glow) * 0.22;
+      color += vec3(1.0,0.95,0.9) * starField(uv + uTime * 0.02) * 0.9;
+      color += ditherAmount(uv);
+
+      float vignette = smoothstep(1.2, 0.4, length(p));
+      color *= vignette;
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `
+});
+
+const nebulaPlane = new THREE.Mesh(new THREE.PlaneGeometry(2,2), nebulaMaterial);
+nebulaScene.add(nebulaPlane);
+
+let audioLevel = 0.0;
+let audioInitialized = false;
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioContext.createAnalyser();
+analyser.fftSize = 256;
+const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+function resizeNebula(){
+  nebulaRenderer.setSize(window.innerWidth, window.innerHeight);
+  nebulaUniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+}
+
+function initAudio(){
+  if(audioInitialized) return;
+  audioInitialized = true;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+  }).catch(()=>{});
+}
+
+document.addEventListener('pointermove', event => {
+  nebulaUniforms.uMouse.value.set(event.clientX / window.innerWidth, 1.0 - event.clientY / window.innerHeight);
+  nebulaUniforms.uRipple.value = 0.25;
+});
+
+document.addEventListener('pointerdown', event => {
+  initAudio();
+  nebulaUniforms.uRipple.value = 1.0;
+});
+
+document.addEventListener('click', initAudio, {once:true});
+
+function animateNebula(){
+  nebulaUniforms.uTime.value += 0.012;
+  if(nebulaUniforms.uRipple.value > 0.001){
+    nebulaUniforms.uRipple.value *= 0.94;
+  }
+
+  if(audioInitialized){
+    analyser.getByteFrequencyData(frequencyData);
+    let sum = 0;
+    for(let i = 0; i < frequencyData.length; i++) sum += frequencyData[i];
+    audioLevel = Math.min(1, sum / (frequencyData.length * 256));
+    nebulaUniforms.uAudio.value = audioLevel;
+  }
+
+  nebulaRenderer.render(nebulaScene, nebulaCamera);
+  requestAnimationFrame(animateNebula);
+}
+
+resizeNebula();
+animateNebula();
+
+const cursorDot=document.querySelector('.cursor-dot');
+const cursorRing=document.querySelector('.cursor-ring');
+
+document.addEventListener('pointermove',e=>{
+  const x=e.clientX;
+  const y=e.clientY;
+  cursorDot.style.left=`${x}px`;
+  cursorDot.style.top=`${y}px`;
+  cursorRing.style.left=`${x}px`;
+  cursorRing.style.top=`${y}px`;
+});
+
+document.addEventListener('pointerdown',()=>{
+  cursorDot.classList.add('active');
+});
+
+document.addEventListener('pointerup',()=>{
+  cursorDot.classList.remove('active');
+});
+
+document.querySelectorAll('a, button').forEach(el=>{
+  el.addEventListener('pointerenter',()=>cursorRing.classList.add('hover'));
+  el.addEventListener('pointerleave',()=>cursorRing.classList.remove('hover'));
+});
 </script>
 </body>
 </html>
